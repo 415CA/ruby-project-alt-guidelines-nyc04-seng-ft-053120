@@ -1,4 +1,4 @@
-class CreateAppointments < ActiveRecord::Base[5.2]
+class CreateAppointments < ActiveRecord::Migration[5.1]
   def change
     create_table :appointments do |t|
       t.integer :groomers_id

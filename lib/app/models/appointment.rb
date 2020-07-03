@@ -1,4 +1,4 @@
-class Appointments < ActiveRecord::Base
+class Appointment < ActiveRecord::Base
   has_many :owners
   belongs_to :groomers
   has_many :dogs, through: :owners
