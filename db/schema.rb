@@ -10,43 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 7) do
-
-  create_table "appointments", force: :cascade do |t|
-    t.integer "groomers_id"
-    t.integer "services_id"
-    t.integer "owners_id"
-    t.date "date"
-    t.time "time"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "dogs", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "groomers", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "services_id"
-  end
-
-  create_table "owners", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "dog_id"
-  end
-
-  create_table "services", force: :cascade do |t|
-    t.string "service_type"
-    t.integer "service_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+ActiveRecord::Schema.define(version: 0) do
 
 end
