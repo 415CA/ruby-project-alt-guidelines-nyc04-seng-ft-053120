@@ -8,6 +8,11 @@ class Appointment < ActiveRecord::Base
   has_many :dogs
   has_many :services
 
+  # has_one :owners
+  # has_one :groomers
+  # has_one :dogs
+  # has_many :services
+
   def add_groomer(groomer)
     self.groomers << groomer
     self.groomer_id = groomer.id

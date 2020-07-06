@@ -10,6 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 7) do
+
+  create_table "appointments", force: :cascade do |t|
+    t.integer "owner_id"
+    t.integer "groomer_id"
+    t.integer "dog_id"
+    t.integer "service_id"
+    t.string "date"
+    t.string "time"
+  end
+
+  create_table "dogs", force: :cascade do |t|
+    t.string "name"
+    t.integer "owner_id"
+    t.integer "appointment_id"
+  end
+
+  create_table "groomers", force: :cascade do |t|
+    t.string "name"
+    t.integer "appointment_id"
+    t.integer "service_id"
+  end
+
+  create_table "owners", force: :cascade do |t|
+    t.string "name"
+    t.integer "appointment_id"
+    t.integer "dog_id"
+  end
+
+  create_table "services", force: :cascade do |t|
+    t.string "name"
+    t.integer "price"
+    t.integer "groomer_id"
+    t.integer "appointment_id"
+  end
 
 end
