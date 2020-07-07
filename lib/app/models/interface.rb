@@ -25,8 +25,8 @@ class Interface
   end
 
   def main_menu
-    puts "Hello, welcome to the app, #{user.username}"
-    puts "You have #{user.teams.count} teams"
+    puts "Hello, welcome to the app, #{user.username}."
+    puts "You have #{user.appointments.count} appointments."
   end
 
 end
