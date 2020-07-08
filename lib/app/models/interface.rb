@@ -46,7 +46,7 @@ class Interface
   # Main menu 
   def main_menu
     system "clear"
-    puts "Hello, #{user.name}, welcome to Fullstuck Dog Groomers!"
+    puts "Hello #{user.name}, welcome to Fullstack Dog Groomers!"
     prompt.select("Please select from the options below") do |menu|
       menu.choice "My Dogs", -> { self.dog_menu }
       menu.choice "My Appointments", -> { self.appointment_menu }
@@ -57,7 +57,7 @@ class Interface
   # Dog menu
   def dog_menu
     system "clear"
-    puts "Hello, welcome to the app, #{user.name}"
+    puts "Hello, welcome to the app, #{user.name}!"
     prompt.select("What would you like to do?") do |menu|
       menu.choice "My dogs", -> { self.select_dog }
       menu.choice "Add a new dog", -> { self.add_new_dog }
@@ -71,7 +71,7 @@ class Interface
   # Appointment menu
   def appointment_menu
     system "clear"
-    puts "#{user.name}, below are your appointment options"
+    puts "#{user.name}, below are your appointment options."
     prompt.select("Please select from the menu below") do |menu|
       menu.choice "Create New Appointment", -> { self.new_appointment }
       menu.choice "Upcoming Appointments", -> { self.select_appointment }
@@ -99,6 +99,7 @@ class Interface
   # Dog Menu Methods
 
   def select_dog
+
     user.select_dog
   end
 
@@ -127,7 +128,7 @@ class Interface
   end
 
   def reschedule_appointment
-    user.reschedule_appointment
+    user.reschedule_appointmen
     self.main_menu
   end
 
@@ -142,7 +143,7 @@ class Interface
     appointment_object = user.select_appointment
     service = user.select_service
     appointment_object.services << service
-    puts "#{service.name} service has been added to your appointment"
+    puts "#{service.name} service has been added to your appointment."
     sleep(4)
     dog_menu
   end
@@ -153,13 +154,13 @@ class Interface
     prompt = TTY::Prompt.new.ask('Are you sure you want to remove this service?')
 
     if prompt
-      puts 'The service has been removed from your appointment'
+      puts 'The service has been removed from your appointment.'
       appointment_object.services.delete(service)
       sleep(5)
       dog_menu
 
     else !prompt
-      puts 'We will keep your appointment as scheduled'
+      puts 'We will keep your appointment as scheduled.'
       sleep(5)
       dog_menu
     end
