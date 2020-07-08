@@ -16,6 +16,13 @@ class Interface
   def logo
     system "clear"
     puts '
+███████╗██╗   ██╗██╗     ██╗     ███████╗████████╗ █████╗  ██████╗██╗  ██╗
+██╔════╝██║   ██║██║     ██║     ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
+█████╗  ██║   ██║██║     ██║     ███████╗   ██║   ███████║██║     █████╔╝ 
+██╔══╝  ██║   ██║██║     ██║     ╚════██║   ██║   ██╔══██║██║     ██╔═██╗ 
+██║     ╚██████╔╝███████╗███████╗███████║   ██║   ██║  ██║╚██████╗██║  ██╗
+╚═╝      ╚═════╝ ╚══════╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+
 ██████╗  ██████╗  ██████╗      ██████╗ ██████╗  ██████╗  ██████╗ ███╗   ███╗██╗███╗   ██╗ ██████╗ 
 ██╔══██╗██╔═══██╗██╔════╝     ██╔════╝ ██╔══██╗██╔═══██╗██╔═══██╗████╗ ████║██║████╗  ██║██╔════╝ 
 ██║  ██║██║   ██║██║  ███╗    ██║  ███╗██████╔╝██║   ██║██║   ██║██╔████╔██║██║██╔██╗ ██║██║  ███╗
@@ -192,7 +199,7 @@ class Interface
   def new_appointment
     dog = user.select_dog
     service = user.select_service
-    groomer = user.select_groomer_from_service(service)
+    groomer = user.select_groomer
     user.new_appointment(dog, service, groomer)
     appointment_menu
   end
@@ -221,7 +228,7 @@ class Interface
     service = user.select_service
     appointment_object.services << service
     puts "#{service.name} service has been added to your appointment"
-    sleep(7)
+    sleep(4)
     dog_menu
   end
 
