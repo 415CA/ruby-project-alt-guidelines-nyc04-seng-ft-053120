@@ -19,8 +19,12 @@ class Owner < ActiveRecord::Base
     found_user = Owner.find_by(name: username)
 
     if !found_user
-      puts 'Sorry, that name cannot be found'
-      sleep(3)
+      puts 'Sorry, that name can not be found'
+      TTY::Prompt.new.select('Please select an option') do |menu|
+        menu.choice 'Register', -> { create_user }
+        menu.choice 'Login', -> { login }
+        menu.choice 'Exit', -> { goodbye }
+      end
 
     elsif found_user
       found_user
@@ -130,15 +134,15 @@ class Owner < ActiveRecord::Base
     end
   end
 
-  def select_groomer_from_service(service_object)
+  def select_groomer
     system 'clear'
-    groomer_names = service_object.groomers.map do |groomer|
+    groomer_names = Groomer.all.map do |groomer|
       { groomer.name => groomer.id }
     end
 
     if !groomer_names.empty?
       groomer_id = TTY::Prompt.new.select('Select a groomer', groomer_names)
-      found_groomer = service_object.groomers.find_by_id(groomer_id) # Return Groomer object from Service array
+      found_groomer = Groomer.all.find_by_id(groomer_id)
       found_groomer
     else
       puts 'You do not have any groomers available!'
@@ -254,8 +258,7 @@ class Owner < ActiveRecord::Base
   # Dog Creation Methods
   def new_dog
     system 'clear'
-    prompt = TTY::Prompt.new
-    dog_name = prompt.ask('Enter the name of your dog')
+    dog_name = TTY::Prompt.new.ask('Enter the name of your dog')
 
     if dog_exist?(dog_name)
       puts 'That name already exists.'

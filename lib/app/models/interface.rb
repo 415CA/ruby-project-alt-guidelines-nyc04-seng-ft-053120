@@ -12,6 +12,25 @@ class Interface
     puts 'We are the next-generation of luxury dog ownership.'
   end
 
+  def logo
+    system "clear"
+    puts '
+███████╗██╗   ██╗██╗     ██╗     ███████╗████████╗ █████╗  ██████╗██╗  ██╗
+██╔════╝██║   ██║██║     ██║     ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
+█████╗  ██║   ██║██║     ██║     ███████╗   ██║   ███████║██║     █████╔╝ 
+██╔══╝  ██║   ██║██║     ██║     ╚════██║   ██║   ██╔══██║██║     ██╔═██╗ 
+██║     ╚██████╔╝███████╗███████╗███████║   ██║   ██║  ██║╚██████╗██║  ██╗
+╚═╝      ╚═════╝ ╚══════╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+
+██████╗  ██████╗  ██████╗      ██████╗ ██████╗  ██████╗  ██████╗ ███╗   ███╗██╗███╗   ██╗ ██████╗ 
+██╔══██╗██╔═══██╗██╔════╝     ██╔════╝ ██╔══██╗██╔═══██╗██╔═══██╗████╗ ████║██║████╗  ██║██╔════╝ 
+██║  ██║██║   ██║██║  ███╗    ██║  ███╗██████╔╝██║   ██║██║   ██║██╔████╔██║██║██╔██╗ ██║██║  ███╗
+██║  ██║██║   ██║██║   ██║    ██║   ██║██╔══██╗██║   ██║██║   ██║██║╚██╔╝██║██║██║╚██╗██║██║   ██║
+██████╔╝╚██████╔╝╚██████╔╝    ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║╚██████╔╝
+╚═════╝  ╚═════╝  ╚═════╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+    '
+  end
+
   # Asks for user to login or create new account
   def login_or_register
     system "clear"
@@ -96,6 +115,11 @@ class Interface
   def new_appointment
     user.new_appointment
     self.main_menu
+    dog = user.select_dog
+    service = user.select_service
+    groomer = user.select_groomer
+    user.new_appointment(dog, service, groomer)
+    appointment_menu
   end
   
   def select_appointment
@@ -114,8 +138,31 @@ class Interface
 
   # Service Menu Methods
 
-  def add_or_remove_services
-    user.select_service
+  def add_service
+    appointment_object = user.select_appointment
+    service = user.select_service
+    appointment_object.services << service
+    puts "#{service.name} service has been added to your appointment"
+    sleep(4)
+    dog_menu
+  end
+
+  def remove_service
+    appointment_object = user.select_appointment
+    service = user.select_service_from_appointment(appointment_object)
+    prompt = TTY::Prompt.new.ask('Are you sure you want to remove this service?')
+
+    if prompt
+      puts 'The service has been removed from your appointment'
+      appointment_object.services.delete(service)
+      sleep(5)
+      dog_menu
+
+    else !prompt
+      puts 'We will keep your appointment as scheduled'
+      sleep(5)
+      dog_menu
+    end
   end
 
   # Exit program method

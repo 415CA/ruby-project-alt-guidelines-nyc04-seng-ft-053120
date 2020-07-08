@@ -6,50 +6,71 @@ Owner.destroy_all
 Dog.destroy_all
 Appointment.destroy_all
 
-melissa = Owner.create(name: 'Melissa')
-mike = Owner.create(name: 'Mike')
+# Owners
+#owners = ['Jeremy','Andrea']
+#owners.each do |owner|
+#  Owner.create(name: owner)
+#end
+#
+## Dogs
+#dogs = ['Rex','Savannah']
+#dogs.each do |dog|
+#  Dog.create(name: dog)
+#end
+#
+#jeremy.dogs << rex
+#andrea.dogs << savannah
 
-caitlin = Groomer.create(name: 'Caitlin')
-chris = Groomer.create(name: 'Chris')
+groomers = ['Emma', 'Louis', 'Margot', 'Kate', 'Mike', 'Phil', 'Denise']
 
-rocco = Dog.create(name: 'Rocco')
-rex = Dog.create(name: 'Rex')
+groomers.each do |groomer|
+  Groomer.create(name: groomer)
+end
 
-hair = Service.create(name: 'Hair', price: 10)
-nails = Service.create(name: 'Nails', price: 10)
-wash = Service.create(name: 'Wash', price: 10)
+# Services
+fullstack_grooming = Service.create(name: 'VIP Fullstack Grooming Service', price: 150)
+paw_massage = Service.create(name: 'Paw Massage', price: 50)
+sanitary_cleanup = Service.create(name: 'Sanitary Cleanup', price: 20)
+full_brush_out = Service.create(name: 'Full Brush Out', price: 20)
+face_shape_up = Service.create(name: 'Face Shape-Up', price: 15)
+feet_shape_up = Service.create(name: 'Feet Shape-Up', price: 10)
+nail_trim = Service.create(name: 'Nail Trim', price: 15)
+nail_grinding = Service.create(name: 'Nail Grinding', price: 25)
+nail_polish = Service.create(name: 'Nail Polish', price: 10)
+teeth_brushing = Service.create(name: 'Teeth Brushing', price: 5)
+flea_shampoo = Service.create(name: 'Flea Shampoo Treatment', price: 12)
+ear_cleaning = Service.create(name: 'Ear Cleaning', price: 5)
+hair_removal = Service.create(name: 'Hair Removal', price: 10)
+bandana = Service.create(name: 'Merch: Our Signature Bandana', price: 10)
+t_shirt = Service.create(name: 'Merch: FSDG T-Shirt Bandana', price: 15)
+hat = Service.create(name: 'Merch: FSDG Hat Bandana', price: 10)
+dog_bowl = Service.create(name: 'Merch: FSDG Dog Bowl', price: 20)
 
-Appointment.create(date: 'July, 24', time: '1:00PM', owner_id: melissa.id, groomer_id: caitlin.id, dog_id: rocco.id, service_id: hair.id)
-Appointment.create(date: 'August, 10', time: '2:00PM', owner_id: melissa.id, groomer_id: caitlin.id, dog_id: rocco.id, service_id: nails.id)
-Appointment.create(date: 'August, 20', time: '3:00PM', owner_id: mike.id, groomer_id: chris.id, dog_id: rex.id, service_id: hair.id)
-Appointment.create(date: 'September, 6', time: '3:40PM', owner_id: mike.id, groomer_id: chris.id, dog_id: rex.id, service_id: wash.id)
+# Groomers
 
-melissa.dogs << rocco
-mike.dogs << rex
+Service.all.map{|service| service.groomers << Groomer.all}
+Groomer.all.map{|groomer| groomer.services << Service.all}
 
-hair.groomers << caitlin
-nails.groomers << chris
-wash.groomers << chris
+#Service.all[13..16].map{|service| service.groomers = Groomer.all[7]}
+#Service.all[14].map{|service| service.groomers = Groomer.all[7]}
+#Service.all[15].map{|service| service.groomers = Groomer.all[7]}
+#Service.all[16].map{|service| service.groomers = Groomer.all[7]}
 
-# 5.times do
-#   Groomer.create(name: Faker::Name.name)
-# end
-# 
-# 5.times do
-#   Owner.create(name: Faker::Name.name)
-# end
-# 
-# 5.times do
-#   Dog.create(name: Faker::Creature::Dog.name)
-# end
-# 
-# 5.times do
-#   Service.create(name: Faker::App.name, price: rand(10..50))
-# end
-# 
-# 5.times do
-#   Appointment.create(date: 'July, 4', time: '1:00PM', owner_id: rand(1..5), groomer_id: rand(1..5), dog_id: rand(1..5), service_id: rand(1..5))
-# end
-# 
-# Appointment.create(date: 'July, 4', time: '1:00PM', owner_id: 1, groomer_id: 1, dog_id: 1, service_id: 1)
-# 
+# bandana.groomers.push(merch)
+# t_shirt.groomers.push(merch)
+# hat.groomers.push(merch)
+# dog_bowl.groomers.push(merch)
+
+#fullstack_grooming.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#paw_massage.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#sanitary_cleanup.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#full_brush_out.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#face_shape_up.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#feet_shape_up.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#nail_trim.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#nail_grinding.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#nail_polish.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#teeth_brushing.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#flea_shampoo.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#ear_cleaning.groomers = [emma, louis, margot, kate, mike, phil, denise]
+#hair_removal.groomers = [emma, louis, margot, kate, mike, phil, denise]
