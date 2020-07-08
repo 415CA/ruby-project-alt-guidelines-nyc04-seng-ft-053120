@@ -19,7 +19,7 @@ class Owner < ActiveRecord::Base
     found_user = Owner.find_by(name: username)
 
     if !found_user
-      puts 'Sorry, that name can not be found'
+      puts 'Sorry, that name cannot be found'
       sleep(3)
 
     elsif found_user
@@ -149,8 +149,8 @@ class Owner < ActiveRecord::Base
   # Appointment Creation Methods
 
   def new_appointment(dog, service, groomer)
-    date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23')
-    time = TTY::Prompt.new.ask('Enter your desired time. Ex: 10:00 AM')
+    date = TTY::Prompt.new.ask('Enter your desired date. (Ex: June 23)')
+    time = TTY::Prompt.new.ask('Enter your desired time. (Ex: 10:00 AM)')
 
     appointment = Appointment.create(owner_id: id, groomer_id: groomer.id, dog_id: dog.id, service_id: service.id, date: date, time: time)
 
@@ -191,8 +191,8 @@ class Owner < ActiveRecord::Base
     prompt = TTY::Prompt.new.yes?("Are you sure you want to reschedule your appointment for #{date} at #{time}?")
 
     if prompt
-      puts 'We have recieved your request.'
-      puts 'An email from your Groomer will be sent once they confirm the changes.'
+      puts 'We have received your request.'
+      puts 'An e-mail from your Groomer will be sent once they confirm the changes.'
       sleep(5)
 
       appointment_object.date = date
@@ -236,7 +236,7 @@ class Owner < ActiveRecord::Base
 
         if prompt
 
-          puts "Your appointment scheduled for #{date} at #{time} has been canceled"
+          puts "Your appointment scheduled for #{date} at #{time} has been canceled."
           puts 'If you would like to add re-book at a later date'
           puts 'Please use the Schedule New Appointment option in the My Appointments menu'
           destroy_appointment(appointment_object)
