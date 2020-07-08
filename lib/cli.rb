@@ -10,7 +10,7 @@ class CommandLineInterface
   
   # Displays welcome message
   def greet
-    puts 'Welcome to K-9 Dog Grooming'
+    puts 'Welcome to Fullstack Dog Groomers!'
   end
 
   def welcome_back(owner_name)
@@ -18,7 +18,7 @@ class CommandLineInterface
   end
 
   def introduction
-    puts 'K-9 Dog Grooming is the next-generation of luxury dog ownership.'
+    puts 'Fullstack Dog Groomers is the next-generation of luxury dog ownership.'
     puts "We've united the extravagance of a modern health spa experience"
     puts 'Please enter your username to get started.'
   end
@@ -56,7 +56,7 @@ class CommandLineInterface
   end
   
   def exit
-    puts "Thank you for visiting K-9 Dog Grooming.\n We look foward to seeing you and your furry friend again soon."
+    puts "Thank you for visiting Fullstack Dog Groomers.\n We look foward to seeing you and your furry friend again soon."
     nil
   end
 
