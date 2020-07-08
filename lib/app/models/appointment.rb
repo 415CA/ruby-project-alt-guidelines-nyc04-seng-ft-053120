@@ -3,33 +3,70 @@
 # Appointment Class Methods
 
 class Appointment < ActiveRecord::Base
+  attr_accessor :prompt, :user
+
   has_many :owners
   has_many :groomers
   has_many :dogs
   has_many :services
 
-  # has_one :owners
-  # has_one :groomers
-  # has_one :dogs
-  # has_many :services
+  def print_owners
+    owners.map { |owner_instance| owner_instance.name.to_s }.join(' | ')
+  end
+
+  def print_dogs
+    dogs.map { |dog_instance| dog_instance.name.to_s }.join(' | ')
+  end
+
+  def print_groomers
+    groomers.map { |groomer_instance| groomer_instance.name.to_s }.join(' | ')
+  end
+
+  def print_services
+    services.map { |service_instance| "#{service_instance[:name]}: $#{service_instance[:price]}" }.join(' | ')
+  end
+
+  def print_time
+    time.to_s
+  end
+
+  def print_date
+    date.to_s
+  end
+
+  def total_service_price
+    services.reduce(0) { |sum, service_instance| sum + service_instance[:price] }
+  end
+
+  def print_appointment
+    puts "Appointment: #{id}"
+    puts "Date: #{print_date}"
+    puts "Time: #{print_time}"
+    puts "Owner: #{print_owners}"
+    puts "Dog: #{print_dogs}"
+    puts "Groomer: #{print_groomers}"
+    puts "Services: #{print_services}"
+    puts "Total: $#{total_service_price}"
+    puts '--------------------------------------------------------------------'
+  end
 
   def add_groomer(groomer)
-    self.groomers << groomer
+    groomers << groomer
     self.groomer_id = groomer.id
   end
 
   def add_service(service)
-    self.services << service
+    services << service
     self.service_id = service.id
   end
 
   def add_owner(owner)
-    self.owners << owner
+    owners << owner
     self.owner_id = owner.id
   end
 
   def add_dog(dog)
-    self.dogs << dog
+    dogs << dog
     self.dog_id = dog.id
   end
 
@@ -40,5 +77,4 @@ class Appointment < ActiveRecord::Base
   def change_time(time)
     self[:time] = time
   end
-
 end
