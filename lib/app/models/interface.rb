@@ -9,19 +9,19 @@ class Interface
 
   # Initial welcome message
   def welcome
-    puts 'Welcome to K-9 Dog Grooming'
+    puts 'Welcome to Fullstack Dog Groomers'
     puts 'We are the next-generation of luxury dog ownership.'
   end
 
   def logo
     system "clear"
     puts '
-██╗  ██╗ █████╗     ██████╗  ██████╗  ██████╗      ██████╗ ██████╗  ██████╗  ██████╗ ███╗   ███╗██╗███╗   ██╗ ██████╗ 
-██║ ██╔╝██╔══██╗    ██╔══██╗██╔═══██╗██╔════╝     ██╔════╝ ██╔══██╗██╔═══██╗██╔═══██╗████╗ ████║██║████╗  ██║██╔════╝ 
-█████╔╝ ╚██████║    ██║  ██║██║   ██║██║  ███╗    ██║  ███╗██████╔╝██║   ██║██║   ██║██╔████╔██║██║██╔██╗ ██║██║  ███╗
-██╔═██╗  ╚═══██║    ██║  ██║██║   ██║██║   ██║    ██║   ██║██╔══██╗██║   ██║██║   ██║██║╚██╔╝██║██║██║╚██╗██║██║   ██║
-██║  ██╗ █████╔╝    ██████╔╝╚██████╔╝╚██████╔╝    ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║╚██████╔╝
-╚═╝  ╚═╝ ╚════╝     ╚═════╝  ╚═════╝  ╚═════╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+██████╗  ██████╗  ██████╗      ██████╗ ██████╗  ██████╗  ██████╗ ███╗   ███╗██╗███╗   ██╗ ██████╗ 
+██╔══██╗██╔═══██╗██╔════╝     ██╔════╝ ██╔══██╗██╔═══██╗██╔═══██╗████╗ ████║██║████╗  ██║██╔════╝ 
+██║  ██║██║   ██║██║  ███╗    ██║  ███╗██████╔╝██║   ██║██║   ██║██╔████╔██║██║██╔██╗ ██║██║  ███╗
+██║  ██║██║   ██║██║   ██║    ██║   ██║██╔══██╗██║   ██║██║   ██║██║╚██╔╝██║██║██║╚██╗██║██║   ██║
+██████╔╝╚██████╔╝╚██████╔╝    ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚═╝ ██║██║██║ ╚████║╚██████╔╝
+╚═════╝  ╚═════╝  ╚═════╝      ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝
     '
   end
 
@@ -31,9 +31,13 @@ class Interface
     logo
     prompt.select('') do |menu|
       menu.choice 'Login', -> { Owner.login }
-      menu.choice 'Register', -> { create_user }
+      menu.choice 'Register', -> { self.create_user }
       menu.choice 'Exit', -> { goodbye }
     end
+  end
+
+  def create_user
+    Owner.create_user
   end
 
   # Category Menus #
@@ -49,7 +53,7 @@ class Interface
 ██  ██  ██ ██   ██ ██ ██  ██ ██     ▀ ██ ▀    ██  ██  ██ ██      ██  ██ ██ ██    ██ 
 ██      ██ ██   ██ ██ ██   ████               ██      ██ ███████ ██   ████  ██████  
     '
-    prompt.select("Hello, #{user.name}, welcome to K-9 Dog Grooming") do |menu|
+    prompt.select("Welcome to Fullstack Dog Groomers") do |menu|
       menu.choice 'My Dogs', -> { dog_menu }
       menu.choice 'My Appointments', -> { appointment_menu }
       menu.choice 'My Grooming Services', -> { services_menu }
@@ -243,6 +247,6 @@ class Interface
 
   def sign_out
     system 'clear'
-    puts 'Thank you for choosing K-9 Dog Grooming!'
+    puts 'Thank you for choosing Fullstack Dog Groomers!'
   end
 end

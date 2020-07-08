@@ -36,13 +36,14 @@ class Owner < ActiveRecord::Base
       puts 'Sorry, that username has been taken'
       TTY::Prompt.new.select('Please select an option') do |menu|
         menu.choice 'Choose another username', -> { create_user }
-        menu.choice 'Log In', -> { login }
+        menu.choice 'Login', -> { login }
         menu.choice 'Exit', -> { goodbye }
       end
     else
       system 'clear'
-      Owner.create(name: username)
-      puts "Welcome to K-9 Dog Grooming #{username}!"
+      owner = Owner.create(name: username)
+      puts "Welcome to Fullstack Dog Groomers #{username}!"
+      owner
       sleep(2)
     end
   end
@@ -314,6 +315,6 @@ class Owner < ActiveRecord::Base
 
   def sign_out
     system 'clear'
-    puts 'Thank you for choosing K-9 Dog Grooming!'
+    puts 'Thank you for choosing Fullstack Dog Groomers!'
   end
 end
