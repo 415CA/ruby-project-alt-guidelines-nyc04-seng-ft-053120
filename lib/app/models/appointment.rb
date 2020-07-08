@@ -11,32 +11,44 @@ class Appointment < ActiveRecord::Base
   has_many :services
 
   def print_owners
-    self.owners.map { |owner_instance| "Owner: #{owner_instance.name}" }.join(" | ")
+    self.owners.map { |owner_instance| "#{owner_instance.name}" }.join(" | ")
   end
 
   def print_dogs
-    self.dogs.map { |dog_instance| "Dog: #{dog_instance.name}" }.join(" | ")
+    self.dogs.map { |dog_instance| "#{dog_instance.name}" }.join(" | ")
   end
 
   def print_groomers
-    self.groomers.map { |groomer_instance| "Groomer: #{groomer_instance.name}"}.join(" | ")
+    self.groomers.map { |groomer_instance| "#{groomer_instance.name}"}.join(" | ")
   end
 
   def print_services
     self.services.map { |service_instance| "#{service_instance[:name]}: $#{service_instance[:price]}"}.join(" | ")
   end
 
+  def print_time
+    "#{self.time}"
+  end
+
+  def print_date
+    "#{self.date}"
+  end
+  
+
   def total_service_price
     self.services.reduce(0){ |sum, service_instance| sum + service_instance[:price] }
   end
 
   def print_appointment
-    puts "#{print_owners}"
-    puts "#{print_dogs}"
-    puts "#{print_groomers}"
-    puts "#{print_services}"
-    puts "The total for your appointment is $#{total_service_price}."
-    self.id
+    puts "Appointment: #{self.id}"
+    puts "Date: #{print_date}"
+    puts "Time: #{print_time}"
+    puts "Owner: #{print_owners}"
+    puts "Dog: #{print_dogs}"
+    puts "Groomer: #{print_groomers}"
+    puts "Services: #{print_services}"
+    puts "Total: $#{total_service_price}"
+    puts "--------------------------------------------------------------------"
   end
 
   def add_groomer(groomer)

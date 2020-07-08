@@ -15,33 +15,36 @@ class Owner < ActiveRecord::Base
 
   def self.login
     system 'clear'
-    prompt = TTY::Prompt.new
-    username = prompt.ask('Enter username')
+    username = TTY::Prompt.new.ask('Enter username')
     found_user = Owner.find_by(name: username)
-    if found_user
-      found_user
-    else
+
+    if !found_user
       puts 'Sorry, that name can not be found'
-      sleep(2)
+      sleep(3)
+
+    elsif found_user
+      found_user
     end
   end
 
-  def self.create_new_user
+  def self.create_user
     system "clear"
-    prompt = TTY::Prompt.new
-    username = prompt.ask('Create a username')
-    if Owner.all.find_by(name: username)
+    username = TTY::Prompt.new.ask('Create a username')
+    found_user = Owner.find_by(name: username)
+
+    if found_user
       puts 'Sorry, that username has been taken'
+      TTY::Prompt.new.select("Please select an option") do |menu|
+        menu.choice "Choose another username", -> { self.create_user }
+        menu.choice "Log In", -> { self.login }
+        menu.choice "Exit", -> { self.goodbye }
+      end
+    else
+      system "clear"
+      Owner.create(name: username)
+      puts "Welcome to K-9 Dog Grooming #{username}!"
       sleep(2)
-#      prompt.select("Please select an option") do |menu|
-#      menu.choice "Choose another username", -> { self.create_new_user }
-#      menu.choice "Log In", -> { self.login }
-#      menu.choice "Exit", -> { self.goodbye }
-#      end
     end
-    Owner.create(name: username)
-    puts "Your username is #{username}"
-    sleep(2)
   end
 
   def self.create_user_return_to_menu
@@ -67,15 +70,22 @@ class Owner < ActiveRecord::Base
       found_dog
     else
       puts "You do not have any dogs listed on your account."
-      sleep(3)
+      sleep(4)
     end
   end
 
   def select_appointment
     system "clear"
 
-    appointments = self.appointments.map do |appointment|
-      { "#{Dog.find_by_id(appointment.dog_id).name}: #{Service.find_by_id(appointment.service_id).name} with #{Groomer.find_by_id(appointment.groomer_id).name} on #{appointment.date} at #{appointment.time}" => appointment.id }
+    owner_appointments = Appointment.all.select{|appointment| appointment.owners.include?(self)}
+
+    appointments = owner_appointments.map do |appointment|
+
+      groomer = appointment.groomers.map { |service| "#{service.name}" }.join(" and ")
+      dogs = appointment.dogs.map { |dog_instance| "#{dog_instance.name}" }.join(' and ')
+      service = appointment.services.map { |service| "#{service.name}" }.join(' and ')
+
+      { "#{dogs}: #{service} with #{groomer} on #{appointment.date} at #{appointment.time}" => appointment.id }
     end
 
     if !appointments.empty?
@@ -84,7 +94,7 @@ class Owner < ActiveRecord::Base
       found_appointment
     else
       puts 'No upcoming appointments available.'
-      sleep(2)
+      sleep(4)
     end
   end
 
@@ -100,7 +110,7 @@ class Owner < ActiveRecord::Base
       found_service
     else
       puts "You do not have any services available!"
-      sleep(3)
+      sleep(4)
     end
   end
 
@@ -116,7 +126,7 @@ class Owner < ActiveRecord::Base
       found_service
     else
       puts "You do not have any services available!"
-      sleep(3)
+      sleep(4)
     end
   end
 
@@ -138,67 +148,38 @@ class Owner < ActiveRecord::Base
 
   # Appointment Creation Methods
 
-  def new_appointment
-    appointment_object = Appointment.new
-    dog_object = self.select_dog
-    service_object = self.select_service
-    groomer_object = self.select_groomer_from_service(service_object)
-
+  def new_appointment(dog, service, groomer)
     date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23')
     time = TTY::Prompt.new.ask('Enter your desired time. Ex: 10:00 AM')
-    binding.pry
-    appointment_object.add_groomer(appointment_object, groomer_object).add_dog(appointment_object, dog_object).add_service(appointment_object, service_object).change_date(appointment_object, date).change_time(appointment_object, time)
 
-   # appointment_object.add_groomer(groomer_object)
+    appointment = Appointment.create(owner_id: self.id, groomer_id: groomer.id, dog_id: dog.id, service_id: service.id, date: date, time: time)
 
-    # appointment_object.add_to_attribute_array(appointment_object, self, groomer_object, dog_object, service_object, date, time)
-    
-    # ( self.id, groomer_object.id, dog_object.id, service_object.id, date, time)
+    appointment.owners << self
+    appointment.groomers << groomer
+    appointment.dogs << dog
+    appointment.services << service
 
-  #  self.appointments << appointment_object
-  #  appointment_object.dogs << dog_object
-  #  appointment_object.groomers << groomer_object
-  #  appointment_object.services << service_object
-  #  appointment_object[:date] = date
-  #  appointment_object[:time] = time
+    puts "Your appointment is scheduled for #{date} at #{time} with #{groomer.name}"
+    sleep(4)
+    appointment
   end
 
-  def add_to_attribute_array(appointment_object, owner_object, groomer_object, dog_object, service_object, date, time)
-    appointment_object.owners << owner_object
-    appointment_object.groomers << groomer_object
-    appointment_object.dogs << dog_object
-    appointment_object.services << service_object
-    appointment_object[:date] = date
-    appointment_object[:time] = time
+  # Appointment retrival and view methods
+
+  def find_owner_appointments
+    Appointment.all.select{|appointment| appointment.owners.include?(self) || appointment.id == self.id }
   end
 
-
-  def add_groomer(appointment_object, groomer)
-    appointment_object.groomers << groomer
-    appointment_object.groomer_id = groomer.id
+  def view_appointments
+    self.find_owner_appointments.map{ |appointment| appointment.print_appointment }
   end
 
-  def add_service(appointment_object, service)
-    appointment_object.services << service
-    appointment_object..service_id = service.id
+  def find_dog_appointments(dog)
+    Appointment.all.select{|appointment| appointment.dogs.include?(dog) || appointment.dog_id == dog.id }
   end
 
-  def add_owner(appointment_object, owner)
-    appointment_object.owners << owner
-    appointment_object.owner_id = owner.id
-  end
-
-  def add_dog(appointment_object, dog)
-    appointment_object.dogs << dog
-    appointment_object.dog_id = dog.id
-  end
-
-  def change_date(date)
-    appointment_object[:date] = date
-  end
-
-  def change_time(time)
-    appointment_object[:time] = time
+  def view_dog_appointments(dog)
+    find_dog_appointments(dog).map{ |appointment| appointment.print_appointment }
   end
 
   # Appointment Update Methods
@@ -211,15 +192,15 @@ class Owner < ActiveRecord::Base
 
     if prompt
       puts "We have recieved your request."
-      puts "You will recieve an email once your Groomer has confirmed the changes."
-      sleep(3)
+      puts "An email from your Groomer will be sent once they confirm the changes."
+      sleep(5)
 
       appointment_object.date = date
       appointment_object.time = time
 
     else !prompt
       puts "We will keep your appointment as scheduled for #{appointment_object.date} at #{appointment_object.time}"
-      sleep(3)
+      sleep(5)
     end
   end
 
@@ -228,6 +209,7 @@ class Owner < ActiveRecord::Base
   def cancel_appointment(appointment_object)
     date = appointment_object.date
     time = appointment_object.time
+    dog_appointments = appointment_object.dogs
 
     prompt = TTY::Prompt.new.yes?("Are you sure you want to cancel the appointment scheduled for #{date} at #{time}?")
 
@@ -237,37 +219,34 @@ class Owner < ActiveRecord::Base
       dog_name = appointment_object.dogs.map{|dog| dog.name }.join(" and ")
 
       if prompt
-        puts "Your appointment scheduled for #{date} at #{time} has been cancled"
-        puts "If you would like to add #{dog_name} back at anytime,"
-        puts "Please use Schedule New Appointment option in the My Appointments menu"
-        sleep(3)
-        self.appointments.delete(appointment_object)
+        puts "Your appointment scheduled for #{date} at #{time} has been canceled"
+        puts "If you would like to add re-book at a later date"
+        puts "Please use the Schedule New Appointment option in the My Appointments menu"
+        destroy_appointment(appointment_object)
+        sleep(5)
+
 
       else !prompt
-        puts "We will keep your appointment scheduled for #{date} at #{time} on your account."
-        sleep(3)
+        puts "We will keep your appointment scheduled for #{date} at #{time}."
+        sleep(5)
       end
 
-    when appointment_object.dogs.count == 1
+    else appointment_object.dogs.count == 1
 
       dog_name = appointment_object.dogs.map{|dog| dog.name }
 
       if prompt
-        puts "Your appointment scheduled for #{date} at #{time} has been cancled"
-        puts "If you would like to add #{dog_name} back at anytime,"
-        puts "Please use Schedule New Appointment option in the My Appointments menu"
-        sleep(3)
-        self.appointments.delete(appointment_object)
+
+        puts "Your appointment scheduled for #{date} at #{time} has been canceled"
+        puts "If you would like to add re-book at a later date"
+        puts "Please use the Schedule New Appointment option in the My Appointments menu"
+        destroy_appointment(appointment_object)
+        sleep(5)
 
       else !prompt
         puts "We will keep your appointment scheduled for #{date} at #{time} on your account."
-        sleep(3)
+        sleep(5)
       end
-
-    else appointment_object.dogs.count.zero?
-      puts "Your appointment has been cancled"
-      self.appointments.delete(appointment_object)
-      sleep(3)
     end
   end
 
@@ -281,14 +260,14 @@ class Owner < ActiveRecord::Base
 
     if dog_exist?(dog_name)
       puts 'That name already exists.'
-      sleep(2)
+      sleep(4)
       self.new_dog
     end
 
     new_dog = Dog.create(name: dog_name)
     self.dogs << new_dog
     puts "#{dog_name} has been added to your account."
-    sleep(2)
+    sleep(4)
   end
 
   # Dog Destroy Methods
@@ -296,23 +275,43 @@ class Owner < ActiveRecord::Base
   def remove_dog(dog_object)
     dog_name = dog_object.name
     prompt = TTY::Prompt.new.yes?("Are you sure you want to remove #{dog_name} from your account?")
-    
+
     if prompt
+
       puts "#{dog_name} has been removed from your account"
       puts "If you would like to add #{dog_name} back at anytime,"
-      puts "Please use Add A New Dog in the My Dogs menu"
-      sleep(3)
-      Dog.all.delete(dog_object)
+      puts "Use Add A New Dog in the My Dogs menu"
+      destroy_dog(dog_object)
+      sleep(4)
+
     else !prompt
       puts "We will keep your #{dog_name} on your account."
-      sleep(3)
+      sleep(4)
     end
   end
   
+  def destroy_appointment(appointment_object)
+    self.appointments.delete(appointment_object) if self.appointments.find{|a| a == appointment_object}
+    Appointment.all.delete(appointment_object) if Appointment.all.find{|a| a == appointment_object}
+    Groomer.all.each{|g| g.appointments.delete(appointment_object)} if Groomer.all.find{|a| a == appointment_object}
+    Service.all.each{|s| s.appointments.delete(appointment_object)} if Service.all.find{|a| a == appointment_object}
+    Dog.all.each{|d| s.appointments.delete(appointment_object)} if Dog.all.find{|a| a == appointment_object}
+  end
+
+  def destroy_dog(dog_object)
+    self.dogs.delete(dog_object) if self.dogs.find{|d| d == dog_object}
+    Appointment.all.each{|d| d.dogs.delete(dog_object)} if Appointment.all.find{|d| d == dog_object}
+    Dog.all.delete(dog_object) if Dog.all.find{|a| a == dog_object}
+  end
 
   # Dog Validation Methods
 
   def dog_exist?(dog_name)
     self.dogs.any?{ |dog| dog[:name] == dog_name }
+  end
+
+  def sign_out
+    system "clear"
+    puts "Thank you for choosing K-9 Dog Grooming!"
   end
 end

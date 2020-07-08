@@ -17,7 +17,7 @@ class Interface
     system "clear"
     prompt.select("Log-in or Register") do |menu|
       menu.choice "Log In", -> { Owner.login }
-      menu.choice "Register", -> { Owner.create_new_user }
+      menu.choice "Register", -> { self.create_user }
       menu.choice "Exit", -> { self.goodbye }
     end
   end
@@ -25,9 +25,10 @@ class Interface
   # Category Menus #
 
   # Main menu
+
   def main_menu
     system "clear"
-    puts "Hello, #{user.name}, welcome to K-9 Dog Grooming"
+    puts "Welcome to K-9 Dog Grooming"
     prompt.select("Please select from the options below") do |menu|
       menu.choice "Dogs", -> { self.dog_menu }
       menu.choice "Appointments", -> { self.appointment_menu }
@@ -36,6 +37,7 @@ class Interface
   end
 
   # Dog menu
+
   def dog_menu
     system "clear"
     puts "Hello, #{user.name}, welcome to K-9 Dog Grooming"
@@ -50,7 +52,7 @@ class Interface
 
   def dog_instance_menu
     system 'clear'
-      prompt.select("Please add another dog or choose another option") do |menu|
+      prompt.select("#{user.name}, add more dogs or choose another option") do |menu|
       menu.choice "Add new dog", -> { self.new_dog}
       menu.choice "Return to dog menu", -> { self.dog_menu}
       menu.choice "Appointment menu", -> { self.appointment_menu }
@@ -60,12 +62,12 @@ class Interface
   end
 
   # Appointment menu
+
   def appointment_menu
     system "clear"
-    puts "#{user.name}, below are your appointment options"
-    prompt.select("Please select from the menu below") do |menu|
+    prompt.select("#{user.name}, please select from the menu below") do |menu|
       menu.choice "Create New Appointment", -> { self.new_appointment }
-      menu.choice "View Upcoming Appointments", -> { self.print_upcoming_appointments }
+      menu.choice "Upcoming Appointments", -> { self.view_owner_appointments }
       menu.choice "Reschedule Appointment", -> { self.reschedule_appointment }
       menu.choice "Cancel Appointment", -> { self.cancel_appointment }
       menu.choice "Main Menu", -> { self.main_menu }
@@ -73,10 +75,10 @@ class Interface
   end
 
   # Services menu
+
   def services_menu
     system "clear"
-    puts "#{user.name}, enjoy our luxury dog grooming services"
-    prompt.select("Please select from the menu below") do |menu|
+    prompt.select("#{user.name}, enjoy our luxury dog grooming services") do |menu|
       menu.choice "Add Service", -> { self.add_service }
       menu.choice "Remove Service", -> { self.remove_service }
       menu.choice "My Appoinments", -> { self.appointment_menu }
@@ -92,17 +94,30 @@ class Interface
   end
 
   def view_dog_appointments
-    dog_object = user.select_dog
-    #print Dog appointments
-    return dog_object.appointments
+    system "clear"
+    dog = user.select_dog
+    if user.find_dog_appointments(dog)
+      user.view_dog_appointments(dog)
+      sleep(7)
+    else user.find_dog_appointments(dog).empty?
+      puts 'There are no appointments currently available'
+    end
     self.dog_menu
   end
 
   def view_owner_appointments
-    user.appointments
-    #print Dog appointments
-    puts dog_object.appointments
-    self.dog_menu
+    if !user.find_owner_appointments
+      system "clear"
+      puts "No upcoming appointments available"
+      sleep(4)
+      self.appointment_menu
+    else
+      system "clear"
+      puts user.view_appointments
+      sleep(7)
+      self.appointment_menu
+    end
+    self.appointment_menu
   end
 
   def new_dog
@@ -117,13 +132,17 @@ class Interface
   end
 
   def print_upcoming_appointments
-    self.appointments.each { |appointment| appointment.print_appointment }
+    user.appointments.each { |appointment| appointment.print_appointment }
   end
 
   # Appointment Menu Methods
 
   def new_appointment
-    user.new_appointment
+    dog = user.select_dog
+    service = user.select_service
+    groomer = user.select_groomer_from_service(service)
+    user.new_appointment(dog, service, groomer)
+    self.appointment_menu
   end
 
   # Returns Appointment object from Owner's array
@@ -140,7 +159,7 @@ class Interface
   def cancel_appointment
     appointment_object = self.select_appointment
     user.cancel_appointment(appointment_object)
-    self.main_menu
+    self.appointment_menu
   end
 
   # Service Menu Methods
@@ -149,27 +168,32 @@ class Interface
     appointment_object = user.select_appointment
     service = user.select_service
     appointment_object.services << service
-    puts "The service has been added to your appointment"
-    sleep(3)
+    puts "#{service.name} service has been added to your appointment"
+    sleep(7)
+    self.dog_menu
   end
 
   def remove_service
     appointment_object = user.select_appointment
     service = user.select_service_from_appointment(appointment_object)
     prompt = TTY::Prompt.new.ask('Are you sure you want to remove this service?')
+
     if prompt
       puts "The service has been removed from your appointment"
       appointment_object.services.delete(service)
-      sleep(3)
+      sleep(5)
+      self.dog_menu
+
     else !prompt
       puts "We will keep your appointment as scheduled"
-      sleep(3)
+      sleep(5)
+      self.dog_menu
     end
   end
 
   # Exit program method
 
-  def goodbye
+  def sign_out
     system "clear"
     puts "Thank you for choosing K-9 Dog Grooming!"
   end
