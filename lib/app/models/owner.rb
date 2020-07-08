@@ -15,7 +15,7 @@ class Owner < ActiveRecord::Base
 
   def self.login
     system 'clear'
-    username = TTY::Prompt.new.ask('Enter username')
+    username = TTY::Prompt.new.ask('Enter Username')
     found_user = Owner.find_by(name: username)
 
     if !found_user
@@ -28,19 +28,19 @@ class Owner < ActiveRecord::Base
   end
 
   def self.create_user
-    system "clear"
-    username = TTY::Prompt.new.ask('Create a username')
+    system 'clear'
+    username = TTY::Prompt.new.ask('Create A Username')
     found_user = Owner.find_by(name: username)
 
     if found_user
       puts 'Sorry, that username has been taken'
-      TTY::Prompt.new.select("Please select an option") do |menu|
-        menu.choice "Choose another username", -> { self.create_user }
-        menu.choice "Log In", -> { self.login }
-        menu.choice "Exit", -> { self.goodbye }
+      TTY::Prompt.new.select('Please select an option') do |menu|
+        menu.choice 'Choose another username', -> { create_user }
+        menu.choice 'Log In', -> { login }
+        menu.choice 'Exit', -> { goodbye }
       end
     else
-      system "clear"
+      system 'clear'
       Owner.create(name: username)
       puts "Welcome to K-9 Dog Grooming #{username}!"
       sleep(2)
@@ -48,18 +48,18 @@ class Owner < ActiveRecord::Base
   end
 
   def self.create_user_return_to_menu
-    system "clear"
-    prompt.select("Please select an option") do |menu|
-      menu.choice "Choose another username", -> { self.create_new_user }
-      menu.choice "Log In", -> { self.login }
-      menu.choice "Exit", -> { self.goodbye }
+    system 'clear'
+    prompt.select('Please select an option') do |menu|
+      menu.choice 'Choose another username', -> { create_new_user }
+      menu.choice 'Log In', -> { login }
+      menu.choice 'Exit', -> { goodbye }
     end
   end
 
   # Class Object Retrival Methods
 
   def select_dog
-    system "clear"
+    system 'clear'
     dog_names = dogs.map do |dog|
       { dog.name => dog.id }
     end
@@ -69,21 +69,20 @@ class Owner < ActiveRecord::Base
       found_dog = Dog.find_by_id(dog_id)
       found_dog
     else
-      puts "You do not have any dogs listed on your account."
+      puts 'You do not have any dogs listed on your account.'
       sleep(4)
     end
   end
 
   def select_appointment
-    system "clear"
+    system 'clear'
 
-    owner_appointments = Appointment.all.select{|appointment| appointment.owners.include?(self)}
+    owner_appointments = Appointment.all.select { |appointment| appointment.owners.include?(self) }
 
     appointments = owner_appointments.map do |appointment|
-
-      groomer = appointment.groomers.map { |service| "#{service.name}" }.join(" and ")
-      dogs = appointment.dogs.map { |dog_instance| "#{dog_instance.name}" }.join(' and ')
-      service = appointment.services.map { |service| "#{service.name}" }.join(' and ')
+      groomer = appointment.groomers.map { |service| service.name.to_s }.join(' and ')
+      dogs = appointment.dogs.map { |dog_instance| dog_instance.name.to_s }.join(' and ')
+      service = appointment.services.map { |service| service.name.to_s }.join(' and ')
 
       { "#{dogs}: #{service} with #{groomer} on #{appointment.date} at #{appointment.time}" => appointment.id }
     end
@@ -99,7 +98,7 @@ class Owner < ActiveRecord::Base
   end
 
   def select_service
-    system "clear"
+    system 'clear'
     service_names = Service.all.map do |service|
       { service.name => service.id }
     end
@@ -109,13 +108,13 @@ class Owner < ActiveRecord::Base
       found_service = Service.all.find_by_id(service_id)
       found_service
     else
-      puts "You do not have any services available!"
+      puts 'You do not have any services available!'
       sleep(4)
     end
   end
 
   def select_service_from_appointment(appointment_object)
-    system "clear"
+    system 'clear'
     service_names = appointment_object.services.map do |service|
       { service.name => service.id }
     end
@@ -125,13 +124,13 @@ class Owner < ActiveRecord::Base
       found_service = appointment_object.services.find_by_id(service_id)
       found_service
     else
-      puts "You do not have any services available!"
+      puts 'You do not have any services available!'
       sleep(4)
     end
   end
 
   def select_groomer_from_service(service_object)
-    system "clear"
+    system 'clear'
     groomer_names = service_object.groomers.map do |groomer|
       { groomer.name => groomer.id }
     end
@@ -141,7 +140,7 @@ class Owner < ActiveRecord::Base
       found_groomer = service_object.groomers.find_by_id(groomer_id) # Return Groomer object from Service array
       found_groomer
     else
-      puts "You do not have any groomers available!"
+      puts 'You do not have any groomers available!'
       sleep(3)
     end
   end
@@ -152,7 +151,7 @@ class Owner < ActiveRecord::Base
     date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23')
     time = TTY::Prompt.new.ask('Enter your desired time. Ex: 10:00 AM')
 
-    appointment = Appointment.create(owner_id: self.id, groomer_id: groomer.id, dog_id: dog.id, service_id: service.id, date: date, time: time)
+    appointment = Appointment.create(owner_id: id, groomer_id: groomer.id, dog_id: dog.id, service_id: service.id, date: date, time: time)
 
     appointment.owners << self
     appointment.groomers << groomer
@@ -167,19 +166,19 @@ class Owner < ActiveRecord::Base
   # Appointment retrival and view methods
 
   def find_owner_appointments
-    Appointment.all.select{|appointment| appointment.owners.include?(self) || appointment.id == self.id }
+    Appointment.all.select { |appointment| appointment.owners.include?(self) || appointment.id == id }
   end
 
   def view_appointments
-    self.find_owner_appointments.map{ |appointment| appointment.print_appointment }
+    find_owner_appointments.map(&:print_appointment)
   end
 
   def find_dog_appointments(dog)
-    Appointment.all.select{|appointment| appointment.dogs.include?(dog) || appointment.dog_id == dog.id }
+    Appointment.all.select { |appointment| appointment.dogs.include?(dog) || appointment.dog_id == dog.id }
   end
 
   def view_dog_appointments(dog)
-    find_dog_appointments(dog).map{ |appointment| appointment.print_appointment }
+    find_dog_appointments(dog).map(&:print_appointment)
   end
 
   # Appointment Update Methods
@@ -191,16 +190,16 @@ class Owner < ActiveRecord::Base
     prompt = TTY::Prompt.new.yes?("Are you sure you want to reschedule your appointment for #{date} at #{time}?")
 
     if prompt
-      puts "We have recieved your request."
-      puts "An email from your Groomer will be sent once they confirm the changes."
+      puts 'We have recieved your request.'
+      puts 'An email from your Groomer will be sent once they confirm the changes.'
       sleep(5)
 
       appointment_object.date = date
       appointment_object.time = time
 
     else !prompt
-      puts "We will keep your appointment as scheduled for #{appointment_object.date} at #{appointment_object.time}"
-      sleep(5)
+        puts "We will keep your appointment as scheduled for #{appointment_object.date} at #{appointment_object.time}"
+        sleep(5)
     end
   end
 
@@ -216,15 +215,14 @@ class Owner < ActiveRecord::Base
     case appointment_object.dogs
     when appointment_object.dogs.count > 1
 
-      dog_name = appointment_object.dogs.map{|dog| dog.name }.join(" and ")
+      dog_name = appointment_object.dogs.map(&:name).join(' and ')
 
       if prompt
         puts "Your appointment scheduled for #{date} at #{time} has been canceled"
-        puts "If you would like to add re-book at a later date"
-        puts "Please use the Schedule New Appointment option in the My Appointments menu"
+        puts 'If you would like to add re-book at a later date'
+        puts 'Please use the Schedule New Appointment option in the My Appointments menu'
         destroy_appointment(appointment_object)
         sleep(5)
-
 
       else !prompt
         puts "We will keep your appointment scheduled for #{date} at #{time}."
@@ -233,20 +231,20 @@ class Owner < ActiveRecord::Base
 
     else appointment_object.dogs.count == 1
 
-      dog_name = appointment_object.dogs.map{|dog| dog.name }
+        dog_name = appointment_object.dogs.map(&:name)
 
-      if prompt
+        if prompt
 
-        puts "Your appointment scheduled for #{date} at #{time} has been canceled"
-        puts "If you would like to add re-book at a later date"
-        puts "Please use the Schedule New Appointment option in the My Appointments menu"
-        destroy_appointment(appointment_object)
-        sleep(5)
+          puts "Your appointment scheduled for #{date} at #{time} has been canceled"
+          puts 'If you would like to add re-book at a later date'
+          puts 'Please use the Schedule New Appointment option in the My Appointments menu'
+          destroy_appointment(appointment_object)
+          sleep(5)
 
-      else !prompt
-        puts "We will keep your appointment scheduled for #{date} at #{time} on your account."
-        sleep(5)
-      end
+        else !prompt
+          puts "We will keep your appointment scheduled for #{date} at #{time} on your account."
+          sleep(5)
+        end
     end
   end
 
@@ -254,18 +252,18 @@ class Owner < ActiveRecord::Base
 
   # Dog Creation Methods
   def new_dog
-    system "clear"
+    system 'clear'
     prompt = TTY::Prompt.new
     dog_name = prompt.ask('Enter the name of your dog')
 
     if dog_exist?(dog_name)
       puts 'That name already exists.'
       sleep(4)
-      self.new_dog
+      new_dog
     end
 
     new_dog = Dog.create(name: dog_name)
-    self.dogs << new_dog
+    dogs << new_dog
     puts "#{dog_name} has been added to your account."
     sleep(4)
   end
@@ -280,7 +278,7 @@ class Owner < ActiveRecord::Base
 
       puts "#{dog_name} has been removed from your account"
       puts "If you would like to add #{dog_name} back at anytime,"
-      puts "Use Add A New Dog in the My Dogs menu"
+      puts 'Use Add A New Dog in the My Dogs menu'
       destroy_dog(dog_object)
       sleep(4)
 
@@ -289,29 +287,33 @@ class Owner < ActiveRecord::Base
       sleep(4)
     end
   end
-  
+
   def destroy_appointment(appointment_object)
-    self.appointments.delete(appointment_object) if self.appointments.find{|a| a == appointment_object}
-    Appointment.all.delete(appointment_object) if Appointment.all.find{|a| a == appointment_object}
-    Groomer.all.each{|g| g.appointments.delete(appointment_object)} if Groomer.all.find{|a| a == appointment_object}
-    Service.all.each{|s| s.appointments.delete(appointment_object)} if Service.all.find{|a| a == appointment_object}
-    Dog.all.each{|d| s.appointments.delete(appointment_object)} if Dog.all.find{|a| a == appointment_object}
+    appointments.delete(appointment_object) if appointments.find { |a| a == appointment_object }
+    Appointment.all.delete(appointment_object) if Appointment.all.find { |a| a == appointment_object }
+    if Groomer.all.find { |a| a == appointment_object }
+      Groomer.all.each { |g| g.appointments.delete(appointment_object) }
+    end
+    if Service.all.find { |a| a == appointment_object }
+      Service.all.each { |s| s.appointments.delete(appointment_object) }
+    end
+    Dog.all.each { |_d| s.appointments.delete(appointment_object) } if Dog.all.find { |a| a == appointment_object }
   end
 
   def destroy_dog(dog_object)
-    self.dogs.delete(dog_object) if self.dogs.find{|d| d == dog_object}
-    Appointment.all.each{|d| d.dogs.delete(dog_object)} if Appointment.all.find{|d| d == dog_object}
-    Dog.all.delete(dog_object) if Dog.all.find{|a| a == dog_object}
+    dogs.delete(dog_object) if dogs.find { |d| d == dog_object }
+    Appointment.all.each { |d| d.dogs.delete(dog_object) } if Appointment.all.find { |d| d == dog_object }
+    Dog.all.delete(dog_object) if Dog.all.find { |a| a == dog_object }
   end
 
   # Dog Validation Methods
 
   def dog_exist?(dog_name)
-    self.dogs.any?{ |dog| dog[:name] == dog_name }
+    dogs.any? { |dog| dog[:name] == dog_name }
   end
 
   def sign_out
-    system "clear"
-    puts "Thank you for choosing K-9 Dog Grooming!"
+    system 'clear'
+    puts 'Thank you for choosing K-9 Dog Grooming!'
   end
 end
