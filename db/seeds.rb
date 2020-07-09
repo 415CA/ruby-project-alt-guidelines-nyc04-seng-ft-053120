@@ -50,27 +50,3 @@ dog_bowl = Service.create(name: 'Merch: FSDG Dog Bowl', price: 20)
 
 Service.all.map{|service| service.groomers << Groomer.all}
 Groomer.all.map{|groomer| groomer.services << Service.all}
-
-#Service.all[13..16].map{|service| service.groomers = Groomer.all[7]}
-#Service.all[14].map{|service| service.groomers = Groomer.all[7]}
-#Service.all[15].map{|service| service.groomers = Groomer.all[7]}
-#Service.all[16].map{|service| service.groomers = Groomer.all[7]}
-
-# bandana.groomers.push(merch)
-# t_shirt.groomers.push(merch)
-# hat.groomers.push(merch)
-# dog_bowl.groomers.push(merch)
-
-#fullstack_grooming.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#paw_massage.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#sanitary_cleanup.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#full_brush_out.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#face_shape_up.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#feet_shape_up.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#nail_trim.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#nail_grinding.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#nail_polish.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#teeth_brushing.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#flea_shampoo.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#ear_cleaning.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#hair_removal.groomers = [emma, louis, margot, kate, mike, phil, denise]
