@@ -30,3 +30,8 @@ bandana = Service.create(name: 'Merch: Our Signature Bandana', price: 10)
 t_shirt = Service.create(name: 'Merch: FSDG T-Shirt Bandana', price: 15)
 hat = Service.create(name: 'Merch: FSDG Hat Bandana', price: 10)
 dog_bowl = Service.create(name: 'Merch: FSDG Dog Bowl', price: 20)
+
+# Groomers
+
+Service.all.map{|service| service.groomers << Groomer.all}
+Groomer.all.map{|groomer| groomer.services << Service.all}
