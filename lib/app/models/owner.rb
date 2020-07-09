@@ -74,6 +74,8 @@ class Owner < ActiveRecord::Base
       found_dog = Dog.find_by_id(dog_id)
       found_dog
     else
+      puts 'Currently there are no dogs on your account.'
+      sleep(3)
       nil
     end
   end
@@ -96,8 +98,9 @@ class Owner < ActiveRecord::Base
       found_appointment = Appointment.find_by_id(appointment_id)
       found_appointment
     else
-      puts 'No upcoming appointments available.'
-      sleep(4)
+      puts 'There are no upcoming appointments scheduled.'
+      sleep(3)
+      nil
     end
   end
 
@@ -112,8 +115,8 @@ class Owner < ActiveRecord::Base
       found_service = Service.all.find_by_id(service_id)
       found_service
     else
-      puts 'You do not have any services available!'
-      sleep(4)
+      puts 'We do not have any services available at this time.'
+      sleep(3)
     end
   end
 
@@ -129,7 +132,7 @@ class Owner < ActiveRecord::Base
       found_service
     else
       puts 'You do not have any services available!'
-      sleep(4)
+      sleep(2)
     end
   end
 
@@ -163,7 +166,7 @@ class Owner < ActiveRecord::Base
     appointment.services << service
 
     puts "Your appointment is scheduled for #{date} at #{time} with #{groomer.name}"
-    sleep(4)
+    sleep(2)
     appointment
   end
 
@@ -191,19 +194,22 @@ class Owner < ActiveRecord::Base
     date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23')
     time = TTY::Prompt.new.ask('Enter your desired time. Ex: 10:00 AM')
 
-    prompt = TTY::Prompt.new.yes?("Are you sure you want to reschedule your appointment for #{date} at #{time}?")
+    choices = [ {name: 'Yes', value: 1}, {name: 'No', value: 2} ]
 
-    if prompt
+    prompt = TTY::Prompt.new.select("Are you sure you want to reschedule your appointment for #{date} at #{time}?", choices)
+
+    case prompt
+    when 1
       puts 'We have recieved your request.'
       puts 'An email from your Groomer will be sent once they confirm the changes.'
-      sleep(5)
+      sleep(3)
 
       appointment_object.date = date
       appointment_object.time = time
 
-    else !prompt
-        puts "We will keep your appointment as scheduled for #{appointment_object.date} at #{appointment_object.time}"
-        sleep(5)
+    when 2
+      puts "We will keep your appointment as scheduled for #{appointment_object.date} at #{appointment_object.time}"
+      sleep(3)
     end
   end
 
@@ -213,42 +219,60 @@ class Owner < ActiveRecord::Base
     date = appointment_object.date
     time = appointment_object.time
     dog_appointments = appointment_object.dogs
-
-    prompt = TTY::Prompt.new.yes?("Are you sure you want to cancel the appointment scheduled for #{date} at #{time}?")
+    choices = [ {name: 'Yes', value: 1}, {name: 'No', value: 2} ]
 
     case appointment_object.dogs
     when appointment_object.dogs.count > 1
-
+      prompt = TTY::Prompt.new.select("Are you sure you want to cancel the appointment scheduled for #{date} at #{time}?", choices)
       dog_name = appointment_object.dogs.map(&:name).join(' and ')
 
-      if prompt
+      case prompt
+      when 1
         puts "Your appointment scheduled for #{date} at #{time} has been canceled"
         puts 'If you would like to add re-book at a later date'
         puts 'Please use the Schedule New Appointment option in the My Appointments menu'
         destroy_appointment(appointment_object)
-        sleep(5)
+        sleep(2)
 
-      else !prompt
+      when 2
         puts "We will keep your appointment scheduled for #{date} at #{time}."
-        sleep(5)
+        sleep(2)
       end
 
     else appointment_object.dogs.count == 1
-
+        prompt = TTY::Prompt.new.select("Are you sure you want to cancel the appointment scheduled for #{date} at #{time}?", choices)
         dog_name = appointment_object.dogs.map(&:name)
 
-        if prompt
+        case prompt
+        when 1
 
           puts "Your appointment scheduled for #{date} at #{time} has been canceled"
           puts 'If you would like to add re-book at a later date'
           puts 'Please use the Schedule New Appointment option in the My Appointments menu'
           destroy_appointment(appointment_object)
-          sleep(5)
+          sleep(2)
 
-        else !prompt
+        when 2
           puts "We will keep your appointment scheduled for #{date} at #{time} on your account."
-          sleep(5)
+          sleep(2)
         end
+    end
+  end
+
+  def remove_service(appointment_object)
+    service = select_service_from_appointment(appointment_object)
+    choices = [ {name: 'Yes', value: 1}, {name: 'No', value: 2} ]
+
+    prompt = TTY::Prompt.new.select('Are you sure you want to remove this service?', choices)
+
+    case prompt
+    when 1
+      puts 'The service has been removed from your appointment'
+      appointment_object.services.delete(service)
+      sleep(3)
+    when 2
+      puts 'We will keep your appointment as scheduled'
+      sleep(3)
     end
   end
 
@@ -261,33 +285,33 @@ class Owner < ActiveRecord::Base
 
     if dog_exist?(dog_name)
       puts 'That name already exists.'
-      sleep(4)
+      sleep(2)
       new_dog
     end
 
     new_dog = Dog.create(name: dog_name)
     dogs << new_dog
     puts "#{dog_name} has been added to your account."
-    sleep(4)
+    sleep(2)
   end
 
   # Dog Destroy Methods
 
   def remove_dog(dog_object)
     dog_name = dog_object.name
-    prompt = TTY::Prompt.new.yes?("Are you sure you want to remove #{dog_name} from your account?")
+    choices = [ {name: 'Yes', value: 1}, {name: 'No', value: 2} ]
+    prompt = TTY::Prompt.new.select("Are you sure you want to remove #{dog_name} from your account?", choices)
 
-    if prompt
-
+    case prompt
+    when 1
       puts "#{dog_name} has been removed from your account"
       puts "If you would like to add #{dog_name} back at anytime,"
       puts 'Use Add A New Dog in the My Dogs menu'
       destroy_dog(dog_object)
-      sleep(4)
-
-    else !prompt
+      sleep(2)
+    when 2
       puts "We will keep your #{dog_name} on your account."
-      sleep(4)
+      sleep(2)
     end
   end
 

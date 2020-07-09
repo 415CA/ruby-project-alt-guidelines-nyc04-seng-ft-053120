@@ -157,12 +157,10 @@ class Interface
     dog = user.select_dog
 
     if dog == nil
-      puts 'There are no appointments currently scheduled'
-      sleep(4)
       dog_menu
     else
       user.view_dog_appointments(dog)
-      sleep(4)
+      sleep(2)
       dog_menu
     end
   end
@@ -171,12 +169,12 @@ class Interface
     if !user.find_owner_appointments
       system 'clear'
       puts 'No upcoming appointments available'
-      sleep(4)
+      sleep(2)
       appointment_menu
     else
       system 'clear'
       puts user.view_appointments
-      sleep(7)
+      sleep(2)
       appointment_menu
     end
     appointment_menu
@@ -189,6 +187,9 @@ class Interface
 
   def remove_dog
     dog = user.select_dog
+    if dog == nil
+      dog_menu
+    end
     user.remove_dog(dog)
     dog_menu
   end
@@ -214,12 +215,18 @@ class Interface
 
   def reschedule_appointment
     appointment_object = select_appointment
+    if appointment_object == nil
+      appointment_menu
+    end
     user.reschedule_appointment(appointment_object)
     appointment_menu
   end
 
   def cancel_appointment
     appointment_object = select_appointment
+    if appointment_object == nil
+      appointment_menu
+    end
     user.cancel_appointment(appointment_object)
     appointment_menu
   end
@@ -228,29 +235,23 @@ class Interface
 
   def add_service
     appointment_object = user.select_appointment
+    if appointment_object == nil
+      services_menu
+    end
     service = user.select_service
     appointment_object.services << service
     puts "#{service.name} service has been added to your appointment"
-    sleep(4)
-    dog_menu
+    sleep(2)
+    services_menu
   end
 
   def remove_service
-    appointment_object = user.select_appointment
-    service = user.select_service_from_appointment(appointment_object)
-    prompt = TTY::Prompt.new.ask('Are you sure you want to remove this service?')
-
-    if prompt
-      puts 'The service has been removed from your appointment'
-      appointment_object.services.delete(service)
-      sleep(5)
-      dog_menu
-
-    else !prompt
-      puts 'We will keep your appointment as scheduled'
-      sleep(5)
-      dog_menu
+    appointment_object = select_appointment
+    if appointment_object == nil
+      services_menu
     end
+    user.remove_service(appointment_object)
+    services_menu
   end
 
   # Exit program method
