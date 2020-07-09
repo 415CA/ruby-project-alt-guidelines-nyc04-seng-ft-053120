@@ -22,7 +22,7 @@ class Dog < ActiveRecord::Base
     end
   end
 
-  def appointements
+  def appointments
     Appointment.all.select do |appointment_instance|
       appointment_instance.dog_id == id
     end
