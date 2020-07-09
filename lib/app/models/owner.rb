@@ -74,8 +74,7 @@ class Owner < ActiveRecord::Base
       found_dog = Dog.find_by_id(dog_id)
       found_dog
     else
-      puts 'You do not have any dogs listed on your account.'
-      sleep(4)
+      nil
     end
   end
 

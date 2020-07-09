@@ -155,13 +155,16 @@ class Interface
   def view_dog_appointments
     system 'clear'
     dog = user.select_dog
-    if user.find_dog_appointments(dog)
+
+    if dog == nil
+      puts 'There are no appointments currently scheduled'
+      sleep(4)
+      dog_menu
+    else
       user.view_dog_appointments(dog)
-      sleep(7)
-    else user.find_dog_appointments(dog).empty?
-      puts 'There are no appointments currently available'
+      sleep(4)
+      dog_menu
     end
-    dog_menu
   end
 
   def view_owner_appointments
