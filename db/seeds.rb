@@ -6,21 +6,6 @@ Owner.destroy_all
 Dog.destroy_all
 Appointment.destroy_all
 
-# Owners
-#owners = ['Jeremy','Andrea']
-#owners.each do |owner|
-#  Owner.create(name: owner)
-#end
-#
-## Dogs
-#dogs = ['Rex','Savannah']
-#dogs.each do |dog|
-#  Dog.create(name: dog)
-#end
-#
-#jeremy.dogs << rex
-#andrea.dogs << savannah
-
 groomers = ['Emma', 'Louis', 'Margot', 'Kate', 'Mike', 'Phil', 'Denise']
 
 groomers.each do |groomer|
