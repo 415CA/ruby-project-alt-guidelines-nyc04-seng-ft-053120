@@ -321,3 +321,4 @@ class Owner < ActiveRecord::Base
     puts 'Thank you for choosing Fullstack Dog Groomers!'
   end
 end
+

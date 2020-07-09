@@ -6,21 +6,6 @@ Owner.destroy_all
 Dog.destroy_all
 Appointment.destroy_all
 
-# Owners
-#owners = ['Jeremy','Andrea']
-#owners.each do |owner|
-#  Owner.create(name: owner)
-#end
-#
-## Dogs
-#dogs = ['Rex','Savannah']
-#dogs.each do |dog|
-#  Dog.create(name: dog)
-#end
-#
-#jeremy.dogs << rex
-#andrea.dogs << savannah
-
 groomers = ['Emma', 'Louis', 'Margot', 'Kate', 'Mike', 'Phil', 'Denise']
 
 groomers.each do |groomer|
@@ -45,32 +30,3 @@ bandana = Service.create(name: 'Merch: Our Signature Bandana', price: 10)
 t_shirt = Service.create(name: 'Merch: FSDG T-Shirt Bandana', price: 15)
 hat = Service.create(name: 'Merch: FSDG Hat Bandana', price: 10)
 dog_bowl = Service.create(name: 'Merch: FSDG Dog Bowl', price: 20)
-
-# Groomers
-
-Service.all.map{|service| service.groomers << Groomer.all}
-Groomer.all.map{|groomer| groomer.services << Service.all}
-
-#Service.all[13..16].map{|service| service.groomers = Groomer.all[7]}
-#Service.all[14].map{|service| service.groomers = Groomer.all[7]}
-#Service.all[15].map{|service| service.groomers = Groomer.all[7]}
-#Service.all[16].map{|service| service.groomers = Groomer.all[7]}
-
-# bandana.groomers.push(merch)
-# t_shirt.groomers.push(merch)
-# hat.groomers.push(merch)
-# dog_bowl.groomers.push(merch)
-
-#fullstack_grooming.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#paw_massage.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#sanitary_cleanup.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#full_brush_out.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#face_shape_up.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#feet_shape_up.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#nail_trim.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#nail_grinding.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#nail_polish.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#teeth_brushing.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#flea_shampoo.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#ear_cleaning.groomers = [emma, louis, margot, kate, mike, phil, denise]
-#hair_removal.groomers = [emma, louis, margot, kate, mike, phil, denise]

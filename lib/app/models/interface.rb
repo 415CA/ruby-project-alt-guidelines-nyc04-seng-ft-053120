@@ -157,7 +157,7 @@ class Interface
     dog = user.select_dog
     if user.find_dog_appointments(dog)
       user.view_dog_appointments(dog)
-      sleep(7)
+      sleep(4)
     else user.find_dog_appointments(dog).empty?
       puts 'There are no appointments currently available'
     end
