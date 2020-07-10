@@ -160,7 +160,7 @@ class Interface
       dog_menu
     else
       user.view_dog_appointments(dog)
-      sleep(2)
+      sleep(5)
       dog_menu
     end
   end
@@ -169,12 +169,12 @@ class Interface
     if !user.find_owner_appointments
       system 'clear'
       puts 'No upcoming appointments available'
-      sleep(2)
+      sleep(3)
       appointment_menu
     else
       system 'clear'
       puts user.view_appointments
-      sleep(2)
+      sleep(5)
       appointment_menu
     end
     appointment_menu
@@ -202,6 +202,9 @@ class Interface
 
   def new_appointment
     dog = user.select_dog
+    if dog == nil
+      dog_menu
+    end
     service = user.select_service
     groomer = user.select_groomer
     user.new_appointment(dog, service, groomer)
@@ -241,7 +244,7 @@ class Interface
     service = user.select_service
     appointment_object.services << service
     puts "#{service.name} service has been added to your appointment"
-    sleep(2)
+    sleep(3)
     services_menu
   end
 

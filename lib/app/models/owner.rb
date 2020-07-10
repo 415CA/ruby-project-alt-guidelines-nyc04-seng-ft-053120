@@ -83,13 +83,11 @@ class Owner < ActiveRecord::Base
   def select_appointment
     system 'clear'
 
-    owner_appointments = Appointment.all.select { |appointment| appointment.owners.include?(self) }
-
+    owner_appointments = find_owner_appointments
     appointments = owner_appointments.map do |appointment|
       groomer = appointment.groomers.map { |service| service.name.to_s }.join(' and ')
       dogs = appointment.dogs.map { |dog_instance| dog_instance.name.to_s }.join(' and ')
       service = appointment.services.map { |service| service.name.to_s }.join(' and ')
-
       { "#{dogs}: #{service} with #{groomer} on #{appointment.date} at #{appointment.time}" => appointment.id }
     end
 
@@ -155,7 +153,7 @@ class Owner < ActiveRecord::Base
   # Appointment Creation Methods
 
   def new_appointment(dog, service, groomer)
-    date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23')
+    date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23 2020')
     time = TTY::Prompt.new.ask('Enter your desired time. Ex: 10:00 AM')
 
     appointment = Appointment.create(owner_id: id, groomer_id: groomer.id, dog_id: dog.id, service_id: service.id, date: date, time: time)
@@ -173,7 +171,12 @@ class Owner < ActiveRecord::Base
   # Appointment retrival and view methods
 
   def find_owner_appointments
-    Appointment.all.select { |appointment| appointment.owners.include?(self) || appointment.id == id }
+    owner_appointments = Appointment.all.select { |appointment| appointment.owners.include?(self) || appointment.owner_id == id } 
+    if !owner_appointments.empty?
+      owner_appointments
+    else
+      nil
+    end
   end
 
   def view_appointments
@@ -191,7 +194,7 @@ class Owner < ActiveRecord::Base
   # Appointment Update Methods
 
   def reschedule_appointment(appointment_object)
-    date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23')
+    date = TTY::Prompt.new.ask('Enter your desired date. Ex: June 23 2020')
     time = TTY::Prompt.new.ask('Enter your desired time. Ex: 10:00 AM')
 
     choices = [ {name: 'Yes', value: 1}, {name: 'No', value: 2} ]

@@ -11,14 +11,17 @@ class Appointment < ActiveRecord::Base
   has_many :services
 
   def print_owners
+    owners = Owner.all.select { |owner| owner.appointments.include?(self) || owner.appointment_id == id }
     owners.map { |owner_instance| owner_instance.name.to_s }.join(' | ')
   end
 
   def print_dogs
+    dogs = Dog.all.select { |dog| dog.appointments.include?(self) || dog.appointment_id == id }
     dogs.map { |dog_instance| dog_instance.name.to_s }.join(' | ')
   end
 
   def print_groomers
+    groomers = Groomer.all.select { |groomer| groomer.appointments.include?(self) || groomer.appointment_id == id }
     groomers.map { |groomer_instance| groomer_instance.name.to_s }.join(' | ')
   end
 
